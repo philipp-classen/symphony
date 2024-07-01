@@ -150,7 +150,7 @@ module Symphony
       kill_services(@readers, reader_timeout)
 
       if @errors_during_shutdown
-        @log.warn { "Failed to gracefully shut down readers. New message might still be ariving. Proceeding with shutting down writes anyways." }
+        @log.warn { "Failed to gracefully shut down readers. New message might still be ariving. Proceeding with shutting down writers anyways." }
       end
       stop_accepting_new_messages
 

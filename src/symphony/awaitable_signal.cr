@@ -8,7 +8,7 @@ module Symphony
   class AwaitableSignal
     @done = Channel(Int32).new
 
-    # Marks the signal as completed. All fibers that are waiting for it will be waken up.
+    # Marks the signal as completed. All fibers that are waiting for it will be woken up.
     #
     # Calling it multiple times is safe. The first call will return `true`, but
     # all calls after that will return `false`.
