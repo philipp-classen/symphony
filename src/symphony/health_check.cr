@@ -5,7 +5,9 @@ module Symphony
     @healthy_in_a_row_counter = 0
     @internal_errors = 0
 
-    def initialize(*, @log = ::Log.for("health-check"), interval = 5.seconds)
+    @log : ::Log = Log.for(HealthCheck)
+
+    def initialize(interval = 5.seconds)
       spawn do
         @log.debug { "Periodic health checks running every 5 seconds" }
         loop do
