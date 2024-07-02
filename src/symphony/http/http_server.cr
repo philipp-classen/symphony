@@ -15,7 +15,7 @@ module Symphony
     property max_request_to_always_log = 1000_u64
     @request_counter = 0_u64
 
-    def initialize(@host = "127.0.0.1", @port = 8080, @health_check : HealthCheck? = nil, &handler : HTTP::Server::Context ->)
+    def initialize(@host = "127.0.0.1", @port = 8080, @health_check : HealthCheck? = nil, *, @reuse_port = false, &handler : HTTP::Server::Context ->)
       @server = HTTP::Server.new do |ctx|
         @pending_requests += 1
         begin
@@ -50,9 +50,9 @@ module Symphony
 
     def start : Nil
       spawn do
-        Log.info { "Listening on http://#{@host}:#{@port}..." }
+        Log.info { "Listening on http://#{@host}:#{@port}... (reuse_port=#{@reuse_port})" }
         @started = true
-        @server.listen(@host, @port)
+        @server.listen(@host, @port, reuse_port: @reuse_port)
         Log.info { "Shutdown: no longer accepting new connection on http://#{@host}:#{@port} (entering grace period)" }
 
         # Give the already accepted but not exected requests a chance to run.

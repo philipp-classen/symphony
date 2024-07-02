@@ -3,5 +3,5 @@ require "./symphony/http"
 
 module Symphony
   Log     = ::Log.for(Symphony)
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 end
