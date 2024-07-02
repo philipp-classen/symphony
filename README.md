@@ -1,15 +1,15 @@
 # Symphony
 
-Streamlines the startup and safe shutdown of Crystal servers that take
-inputs (e.g. queues, HTTP requests) and stream them to various outputs.
-It is not intended for classical HTTP servers that take a request and
-respond directly, but rather for asynchronous processing.
+Simplifies the startup and safe shutdown of Crystal servers that process inputs
+(such as queues and HTTP requests) and stream them to various outputs.
+Unlike traditional HTTP servers that directly respond to requests, this framework
+is designed for asynchronous processing.
 
 The core idea is to let the application define a list of readers (input)
 and writers (output), where each reader and writer will run independently.
 
 The framework will take care of the proper startup (first the writers,
-then the readers), and the safe shutdown (stopping first the readers,
+then the readers) and the safe shutdown (stopping first the readers,
 then the writers). It will also handle signals like SIGINT or SIGTERM.
 
 ## Installation
@@ -26,9 +26,9 @@ then the writers). It will also handle signals like SIGINT or SIGTERM.
 
 ## Usage
 
-This is a minimal example to illustrate what to setup a basic server.
-It is not very useful, since it does not define a writer, but it
-shows the basic structure of a Symphony application.
+Here is a minimal example to illustrate how to set up a basic server. While
+this example does not include a writer and may not be practically useful,
+it demonstrates the basic structure of a Symphony application.
 
 ```crystal
 require "symphony"
