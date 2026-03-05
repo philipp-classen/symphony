@@ -30,8 +30,17 @@ module Symphony
         shutdown_on_signal
       end
 
-      Log.debug { "Starting up writers..." }
+      # 1) Preparation phase
+      Log.debug { "Preparing writers..." }
       @writers = create_output_writers
+      Log.debug { "Preparing writers...DONE (they are not started yet)" }
+
+      Log.debug { "Preparing readers..." }
+      @readers = create_input_readers
+      Log.debug { "Preparing readers...DONE (they are not started yet)" }
+
+      # 2) Starting up services
+      Log.debug { "Starting up writers..." }
       if @writers.empty?
         Log.debug { "No writer configured." }
       else
@@ -40,7 +49,6 @@ module Symphony
       end
 
       Log.debug { "Starting up readers..." }
-      @readers = create_input_readers
       if @readers.empty?
         Log.debug { "No readers configured." }
       else
@@ -48,14 +56,18 @@ module Symphony
         Log.debug { "Starting up readers...DONE (#{@readers.size} in total)" }
       end
 
+      # 3) System is fully operational
       health_check.try &.application_ready!
       Log.info { "Starting application...DONE" }
 
+      # 4) Shutdown phase
       @shutdown.wait
       health_check.try &.stop_health_checks
       Log.info { "Application stopped." }
-
-      sleep 0 # give the event loop a chance to clear (flushes the logger)
+    ensure
+      # Give the event loop a chance to clear. This flushes the logger and
+      # avoids misleading "Channel is closed (Channel::ClosedError)" errors.
+      sleep 0
     end
 
     abstract def create_output_writers : Array(BackgroundService)

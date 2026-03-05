@@ -38,6 +38,14 @@ module Symphony
           @pending_requests -= 1
         end
       end
+
+      begin
+        @server.bind_tcp(@host, @port, reuse_port: @reuse_port)
+      rescue e : Socket::BindError
+        Log.error { "Failed to bind port #{@host}:#{@port}" }
+        @health_check.try &.internal_error!
+        raise e
+      end
     end
 
     def skip_logging(ctx) : Bool
@@ -52,10 +60,11 @@ module Symphony
       spawn do
         Log.info { "Listening on http://#{@host}:#{@port}... (reuse_port=#{@reuse_port})" }
         @started = true
-        @server.listen(@host, @port, reuse_port: @reuse_port)
+        @server.listen
+
         Log.info { "Shutdown: no longer accepting new connection on http://#{@host}:#{@port} (entering grace period)" }
 
-        # Give the already accepted but not exected requests a chance to run.
+        # Give the already accepted but not executed requests a chance to run.
         # If they count as pending, it will delay the shutdown of the writer.
         sleep 0
 
