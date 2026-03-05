@@ -3,5 +3,5 @@ require "./symphony/http"
 
 module Symphony
   Log     = ::Log.for(Symphony)
-  VERSION = "0.1.1"
+  VERSION = {{ `shards version "#{__DIR__}"`.chomp.stringify }}
 end
