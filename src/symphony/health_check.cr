@@ -11,7 +11,7 @@ module Symphony
       spawn do
         @log.debug { "Periodic health checks running every 5 seconds" }
         loop do
-          sleep interval.seconds
+          sleep interval
           break if @health_checks_stopped
           run_health_check
         end
