@@ -52,10 +52,6 @@ module Symphony
       ctx.response.status.success?
     end
 
-    def format_access_log(ctx : HTTP::Server::Context) : String
-      %("#{ctx.request.method} #{ctx.request.path}" #{ctx.response.status_code})
-    end
-
     def start : Nil
       spawn do
         Log.info { "Listening on http://#{@host}:#{@port}... (reuse_port=#{@reuse_port})" }
@@ -90,6 +86,35 @@ module Symphony
 
     def alive? : Bool
       @started && !@shutdown_complete.done?
+    end
+
+    # Formats the access log line, e.g. `"GET /foo/bar" 200`.
+    private def format_access_log(ctx : HTTP::Server::Context) : String
+      String.build do |io|
+        io << '"'
+        sanitize(ctx.request.method, io)
+        io << ' '
+        sanitize(ctx.request.path, io)
+        io << "\" " << ctx.response.status_code
+      end
+    end
+
+    private def sanitize(s : String, io : IO) : Nil
+      bytes = s.to_slice
+      start = 0
+      reader = Char::Reader.new(s)
+      reader.each do |char|
+        next unless char.control?
+        io.write_string(bytes[start...reader.pos])
+
+        # CWE-117: sanitize control characters (C0, DEL, C1,
+        # all matched by char.control?).
+        io << "\\x"
+        char.ord.to_s(io, 16, precision: 2)
+
+        start = reader.pos + reader.current_char_width
+      end
+      io.write_string(bytes[start..])
     end
   end
 end
