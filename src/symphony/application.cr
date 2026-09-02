@@ -168,9 +168,9 @@ module Symphony
       kill_services(@writers, writer_timeout)
 
       if @errors_during_shutdown
-        Log.info { "Forced shutdown completed successfully. No errors were detected." }
-      else
         Log.warn { "Forced shutdown completed but with errors." }
+      else
+        Log.info { "Forced shutdown completed successfully. No errors were detected." }
       end
     end
 
