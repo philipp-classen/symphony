@@ -9,19 +9,19 @@ module Symphony
     # Takes care of delegating all necessary methods.
     macro service_implemented_by(service)
       def start : Nil
-        {{service}}.start
+        {{ service }}.start
       end
 
       def interrupt : Nil
-        {{service}}.interrupt
+        {{ service }}.interrupt
       end
 
       def join(timeout : Time::Span? = nil) : Nil
-        {{service}}.join(timeout)
+        {{ service }}.join(timeout)
       end
 
       def alive? : Bool
-        {{service}}.alive?
+        {{ service }}.alive?
       end
     end
   end
