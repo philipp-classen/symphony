@@ -67,7 +67,7 @@ module Symphony
     ensure
       # Give the event loop a chance to clear. This flushes the logger and
       # avoids misleading "Channel is closed (Channel::ClosedError)" errors.
-      sleep 0
+      Fiber.yield
     end
 
     abstract def create_output_writers : Array(BackgroundService)

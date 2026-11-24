@@ -62,7 +62,7 @@ module Symphony
 
         # Give the already accepted but not executed requests a chance to run.
         # If they count as pending, it will delay the shutdown of the writer.
-        sleep 0
+        Fiber.yield
 
         counter = 0
         while @pending_requests > 0
