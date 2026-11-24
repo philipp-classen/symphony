@@ -168,9 +168,10 @@ module Symphony
       kill_services(@writers, writer_timeout)
 
       if @errors_during_shutdown
-        Log.warn { "Forced shutdown completed but with errors." }
+        Log.warn { %(Forced shutdown completed but with errors. Because we are in an error state, we have to wait. Should the shutdown hang now, the process will eventually be terminated ("hard kill").) }
       else
         Log.info { "Forced shutdown completed successfully. No errors were detected." }
+        @shutdown.done! # clean shutdown -> do not wait
       end
     end
 
