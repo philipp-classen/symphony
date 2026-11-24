@@ -150,12 +150,12 @@ module Symphony
       end
 
       if timeout < min_reader_timeout + min_writer_timeout
-        Log.warn { "Invidual timeouts (min_reader_timeout=#{min_reader_timeout}, min_writer_timeout=#{min_writer_timeout}) can exceed the total timeout (#{timeout})" }
+        Log.warn { "Individual timeouts (min_reader_timeout=#{min_reader_timeout}, min_writer_timeout=#{min_writer_timeout}) can exceed the total timeout (#{timeout})" }
       end
 
       # since we have a fixed time budget for the shutdown, try not to burn everything on the inputs
       started_at = Time.utc
-      reader_timeout = {min_writer_timeout, timeout * 0.3}.max
+      reader_timeout = {min_reader_timeout, timeout * 0.3}.max
       kill_services(@readers, reader_timeout)
 
       if @errors_during_shutdown
