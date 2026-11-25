@@ -8,3 +8,15 @@ test-e2e:
 
 test-all:
 	crystal spec --verbose --order random
+
+linter:
+	crystal run lib/ameba/bin/ameba.cr
+
+linter-fix:
+	crystal run lib/ameba/bin/ameba.cr -- --fix
+
+format-check:
+	crystal tool format --check
+
+format-apply:
+	crystal tool format

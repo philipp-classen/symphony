@@ -67,7 +67,17 @@ Unit tests run in the test process. They are fast.
 E2E tests start a test app as a process of its own. Use them for code that
 ends the process. They are slower.
 
-Test code for the two kinds is in `spec/support`.
+Helpers and fakes for the tests are in `spec/support`.
+
+Before a commit, run the format check and the linter (Ameba). The linter
+needs `shards install` one time:
+
+```
+make format-check
+make linter
+```
+
+`make format-apply` and `make linter-fix` correct what they can.
 
 ### How the E2E tests work
 
@@ -102,7 +112,7 @@ To see the output of a test app, start it by hand:
 SYMPHONY_E2E_TEST_APP_NAME=unstoppable crystal spec spec/e2e
 ```
 
-The details are in `spec/e2e/e2e_test_app.cr`.
+The details are in `spec/support/e2e_test_app.cr`.
 
 ## Contributing
 

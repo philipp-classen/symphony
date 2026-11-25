@@ -1,6 +1,6 @@
 require "../spec_helper"
+require "../support/e2e_test_app"
 require "../support/one_writer_app"
-require "./e2e_test_app"
 
 # The application with the real hard kill, which ends the process: run it
 # only in an `E2ETestApp`.
