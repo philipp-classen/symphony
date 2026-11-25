@@ -56,7 +56,53 @@ APP.run
 
 ## Development
 
-There are currently no tests.
+| Tests | Folder | Command |
+|---|---|---|
+| Unit tests | `spec/unit` | `make test` |
+| E2E tests | `spec/e2e` | `make test-e2e` |
+| All tests | `spec` | `make test-all` |
+
+Unit tests run in the test process. They are fast.
+
+E2E tests start a test app as a process of its own. Use them for code that
+ends the process. They are slower.
+
+Test code for the two kinds is in `spec/support`.
+
+### How the E2E tests work
+
+Some code ends the process, for example the hard kill. A test cannot run
+such code in the test process. It needs a second process.
+
+The second process is the test program itself. It has two uses:
+
+- Started as usual, it runs the tests.
+- Started with `SYMPHONY_E2E_TEST_APP_NAME=<name>`, it runs only the code of
+  the test app with that name, and then it stops.
+
+An E2E test defines a test app and starts it as a process:
+
+```crystal
+unstoppable_app = E2ETestApp.define "unstoppable" do
+  # the code of the app; here it ends with a hard kill
+end
+
+it "ends the process with a hard kill" do
+  status, output = unstoppable_app.run_as_process
+  # ...
+end
+```
+
+Thus a test app can use all the code of the tests. No second program and
+no compiler are necessary when the tests run.
+
+To see the output of a test app, start it by hand:
+
+```
+SYMPHONY_E2E_TEST_APP_NAME=unstoppable crystal spec spec/e2e
+```
+
+The details are in `spec/e2e/e2e_test_app.cr`.
 
 ## Contributing
 

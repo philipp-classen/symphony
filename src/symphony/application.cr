@@ -102,8 +102,7 @@ module Symphony
             spawn do
               sleep timeouts[:hard_kill]
               Log.error { "Even the forced shutdown failed. Forcing a hard kill, even it means losing data." }
-              sleep 1.seconds
-              Process.exit(0)
+              hard_kill!
             end
             force_shutdown(timeout: timeouts[:forced])
           end
@@ -196,6 +195,15 @@ module Symphony
         signal
       end
       all_done.each &.wait
+    end
+
+    # Ends the process if the shutdown hangs.
+    #
+    # Typically, there should be no reason to overwrite it. It primarily
+    # exists to make the code testable.
+    protected def hard_kill! : Nil
+      sleep 1.seconds # time to write the last log messages
+      Process.exit(0)
     end
   end
 end
